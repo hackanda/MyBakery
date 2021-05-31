@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Rishabh's Bakery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      var countitems = 0;
+var toppings = [];
+var quantity = 0;
+var shape = '';
+
+
+
+var Items = [
+    {
+        name: 'Burger',
+        calories: 325,
+        baketime: 25,
+        cost: 150,
+        quantity: 1,
+        shape : ''
+    },
+    {
+        name: 'Pizza',
+        calories: 250,
+        baketime: 45,
+        cost: 310,
+        quantity: 1,
+        shape : ''
+    },
+    {
+        name: 'Dough Nut',
+        calories: 400,
+        baketime: 10,
+        cost: 70,
+        quantity: 1,
+        shape : ''
+    },
+    {
+        name: 'Pan Cake',
+        calories: 475,
+        baketime: 10,
+        cost: 15,
+        quantity: 1,
+        shape : ''
+    }
+];
+
+var Cart = [];
+
+function totalcost(Cart)
+{
+    var cost = 0;
+    cost = Cart.quantity*Cart.cost;
+    return cost;    
+}
+
+function cartcost(Cart)
+{
+    let cost = 0;
+    for(i = 0 ; i < Cart.length ; i++)
+    {
+        cost += totalcost(Cart[i]);
+    }
+
+    return cost;
+}
+
+function totalcal(Cart)
+{
+    let cal = 0;
+    for(i = 0 ; i < Cart.length ; i++)
+    {
+        cal += Cart[i].calories;
+    
+    }
+    return cal;
+}
+
+function totalbt(Cart)
+{
+    let bt = Cart[0].baketime;
+    for(i = 0 ; i < Cart.length ; i++)
+    {
+        if(Cart[i].baketime > bt)
+            bt = Cart[i].baketime;
+    
+    }
+    return bt+10;
+}
+
+$(document).ready(() => {
+    var add_button = $(".add_data");
+    var contentmodal = $("#cartmodal");
+    $(add_button).click((e) => {
+        e.preventDefault();
+
+        var temp = new Object();
+
+        var itemname = document.getElementById("item_header").innerText;
+
+        for(i = 0 ; i < Items.length ; i++)
+        {
+           
+            if(itemname === Items[i].name) // Import the properties of the item by comparing the names
+            {
+                 temp = JSON.parse(JSON.stringify(Items[i]));
+            }
+        }
+
+        $("input:radio[name=btnradio]:checked").each(function(){ // Getting Selected Shape
+            temp.shape =  $(this).val();;
+        });
+
+        $("input:checkbox[name=chkbk]:checked").each(function(){ // Getting Selected Toppings
+            if(!toppings.includes($(this).val()))
+                {
+                    toppings.push($(this).val());
+                    temp.toppings = toppings;
+                }
+        });
+
+        temp.quantity = document.getElementById("Num").value; // Getting Quantity
+        
+        // console.log(temp.shape ,temp.toppings,temp.quantity);
+
+        $(contentmodal).append('<h2 style="color : green;">'+(countitems+1)+'. '+temp.name+ '</h2>' + 
+        '<div><span class="font fs-5" style="color : blue;">Shape: </span><span>'+ temp.shape + 
+        '</span><br><span class="font fs-5" style="color : blue;">Toppings Selected: </span><span>'+temp.toppings+
+        '</span><br><span class="font fs-5" style="color : blue;">Quantity: </span><span>'+temp.quantity+'</span><br></div><br>');
+        countitems += 1;
+        // console.log(countitems);
+        Cart.push(temp);
+
+        $("input:radio").prop("checked",false);
+        $("input:checkbox").prop("checked",false);
+        $("#btnradio1").attr('checked','checked');
+        toppings = [];
+        document.getElementById("Num").value = 1;
+
+        console.log(Cart);
+        delete temp; 
+    })
+
+    var cart_button = $(".cart");
+    var number = $("#countitems");
+    $(cart_button).click((e) => {
+        $(number).text(countitems); // Sending the number to the cart item number field.
+    })
+
+    var billbutton = $("#generatebill");
+    var table1 = $("#tablebody")
+    $(billbutton).click( (e) => {
+        $(table1).empty();
+        for(i =0; i < Cart.length; i++)
+        {
+            $(table1).append('<tr><th scope="row">'+(i+1)+'</th><td>'+Cart[i].name+'</td><td>'+Cart[i].calories+
+            '</td><td>'+Cart[i].baketime+'</td><td>'+Cart[i].toppings+'</td><td>'+Cart[i].quantity+
+            '</td><td>'+ Cart[i].cost+ '</td><td>'+totalcost(Cart[i])+'</td></tr>')
+        }
+
+        document.getElementById("summary").innerHTML = '<p>Total Cost : ' + cartcost(Cart)+ ' Rs</p><p> Total Baking Time : '+ totalbt(Cart)+' Minutes</p><p>Total Calories : ' + totalcal(Cart)+' KCal</p>';
+        
+    })
+
+    $("#final").click( (e) => {
+        alert('Order Placed :)')
+        location.reload();
+    })
+
+    
+})
+
+function fun1()
+{
+    var name = document.getElementById("card1").innerHTML;
+    var content = document.getElementById("item_header").innerHTML = name;
+}
+
+function fun2()
+{
+    var name = document.getElementById("card2").innerHTML;
+    var content = document.getElementById("item_header").innerHTML = name;
+}
+
+function fun3()
+{
+    var name = document.getElementById("card3").innerHTML;
+    var content = document.getElementById("item_header").innerHTML = name;
+}
+
+function fun4()
+{
+    var name = document.getElementById("card4").innerHTML;
+    var content = document.getElementById("item_header").innerHTML = name;
+}
+    </script>
+  </head>
+  <body style="background-image: url('https://images.pexels.com/photos/929192/pexels-photo-929192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');background-repeat: no-repeat;
+  background-attachment: fixed;">
+    <header>
+      <!-- Image and text -->
+      <nav class="navbar navbar-dark bg-dark bg-gradient fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="http://3.bp.blogspot.com/-JGiI5zxU1_g/UEOifo-jOCI/AAAAAAAAMkw/GaTrI0EtQUk/s1600/Annas+logo+2012.png" alt="" width="40" height="30" class="d-inline-block align-top">
+            Rishabh's Bakery
+          </a>
+          <!-- <a href="bakeme.html" class="btn btn-outline-info">Custom Item</a> -->
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="btn btn-outline-info nav-link " aria-current="page" href="custombakery.html">Custom Item</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <button  type="button" class="btn btn-info cart" data-bs-toggle="modal" data-bs-target="#modal2">
+              Cart
+            </button>
+          </form>
+        </div>
+      </nav>
+    </header>
+    <br><br><br>
+    <main>
+      <div class="container my-2" >
+      <div class="row d-flex align-items-start justify-content-start">
+        <div class="col-auto">
+          <div class="card my-2" style="width: 18rem;">
+            <img src="https://previews.123rf.com/images/karelnoppe/karelnoppe1510/karelnoppe151000024/47166349-extreme-close-up-of-multiple-appetizing-mini-chicken-burgers-small-burgers-in-row-for-catering-servi.jpg" class="card-img-top" alt="...">
+            <div class="card-body" >
+              <h5 class="card-title" id="card1">Burger</h5>
+              <!-- <p class="card-text">A very tasty thing to have that can fill stomach at low cost.</p><br> -->
+              <p class="fs-6">Calories: 325 KCal<br>Baking Time: 25 Minutes<br>Cost: 150 Rs</p><br>
+              <button type="button" class="btn btn-primary" onclick="fun1();" data-bs-toggle="modal" data-bs-target="#modal1">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+        <div class="card my-2" style="width: 18rem;">
+          <img src="https://www.barbarabakes.com/wp-content/uploads/2018/08/Easy-Mini-Pizzas-Plated-Barbara-Bakes.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title" id="card2">Pizza</h5>
+            <!-- <p class="card-text">Very Tasty food item that can make your mouth water in seconds.</p> -->
+            <p class="fs-6">Calories: 250 KCal<br>Baking Time: 45 Minutes<br>Cost: 310 Rs</p><br>
+            <button type="button" class="btn btn-primary" onclick="fun2();" data-bs-toggle="modal" data-bs-target="#modal1">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="card my-2" style="width: 18rem;">
+          <img src="https://www.biggerbolderbaking.com/wp-content/uploads/2020/11/Homemade-Dunkin-Donuts-WS-Thumb-scaled.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title" id="card3">Dough Nut</h5>
+            <!-- <p class="card-text">Round they are , but can taste as heaven.</p> -->
+            <p class="fs-6">Calories: 400 KCal<br>Baking Time: 10 Minutes<br>Cost: 70 Rs</p><br>
+            <button type="button" class="btn btn-primary" onclick="fun3();" data-bs-toggle="modal" data-bs-target="#modal1">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-auto my-2">
+        <div class="card" style="width: 18rem;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Blueberry_pancakes_%283%29.jpg/1200px-Blueberry_pancakes_%283%29.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title" id="card4">Pan Cake</h5>
+            <!-- <p class="card-text" >They are small, but never take them lightly.</p> -->
+            <p class="fs-6">Calories: 475 KCal<br>Baking Time: 10 Minutes<br>Cost: 15 Rs</p><br>
+            <button type="button" class="btn btn-primary" onclick="fun4();" data-bs-toggle="modal" data-bs-target="#modal1">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      </div>
+
+      <!-- Add to Cart Modal -->
+      <div class="modal fade" id="modal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="item_header"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+             <h5 style="color: brown;"> Select Shapes</h5>
+             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" value="Circle" name="btnradio" id="btnradio1" autocomplete="off" checked>
+              <label class="btn btn-outline-success" for="btnradio1">Circle</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" value="Triangle" autocomplete="off">
+              <label class="btn btn-outline-success" for="btnradio2">Triangle</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" value="Square" autocomplete="off">
+              <label class="btn btn-outline-success" for="btnradio3">Square</label>
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio4" value="Diamond" autocomplete="off">
+              <label class="btn btn-outline-success" for="btnradio4">Diamond</label>
+            </div>
+
+              <h5 class="my-2" style="color: brown;">Select Toppings</h5>
+              <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                <input type="checkbox" class="btn-check" name="chkbk" value="Oregano" id="btncheck1" autocomplete="off">
+                <label class="btn btn-outline-success" for="btncheck1">Oregano</label>
+              
+                <input type="checkbox" class="btn-check" name="chkbk" id="btncheck2" value="Mayonese" autocomplete="off">
+                <label class="btn btn-outline-success" for="btncheck2">Mayonese</label>
+              
+                <input type="checkbox" class="btn-check" name="chkbk" id="btncheck3" value="Chilly Flakes" autocomplete="off">
+                <label class="btn btn-outline-success" for="btncheck3">Chilly Flakes</label>
+
+                <input type="checkbox" class="btn-check" name="chkbk" id="btncheck4" value="Salt" autocomplete="off">
+                <label class="btn btn-outline-success" for="btncheck4">Chocolate Syrup</label>
+
+                <input type="checkbox" class="btn-check" name="chkbk" id="btncheck5" value="Sweet Candies" autocomplete="off">
+                <label class="btn btn-outline-success" for="btncheck5">Choco Chips</label>
+              </div>
+              <br>
+
+              <h5 class="my-2" style="color: brown;"><label for="Num">Quantity</label></h5>
+              <input class="btn btn-outline-primary"  style="width: 6em;" min="1" max="100" id="Num" type="number" name="Num" value="1">
+
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-success add_data" data-bs-dismiss="modal">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>  
+
+      <!-- Cart Modal -->
+      <div class="modal fade" id="modal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title" id="staticBackdropLabel">Cart <span class="bg-info" style="width: 10rem ;" id="countitems"></span></h3>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="cartmodal">
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+              <!-- Bill Button Modal -->
+            <button type="button" class="btn btn-outline-success" id="generatebill" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#billmodal">
+              Generate Bill
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+
+<!-- Bill Modal -->
+<div class="modal fade" id="billmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Bill</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover" id="billtable">
+          <thead>
+            <tr>
+              <th scope="col">No</th>
+              <th scope="col">Item Name</th>
+              <th scope="col">Calorific Value(KCal)</th>
+              <th scope="col">Baking Time(Min)</th>
+              <th scope="col">Toppings</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Cost Per Unit (Rs)</th>
+              <th scope="col">Total Cost (Rs)</th>
+            </tr>
+          </thead>
+          <tbody id="tablebody"></tbody>
+        </table>
+
+        <p id="summary"></p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="final" class="btn btn-primary">Place Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    </main>
+
+
+    <footer></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  </body>
+</html>

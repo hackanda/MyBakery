@@ -1,0 +1,400 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Bake Me!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      
+      /* Create three equal columns that floats next to each other */
+      .column {
+        float: left;
+        width: 33.33%;
+        padding: 10px;
+        overflow: auto;
+      }
+      
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      </style>
+    <script>
+      var count = 1;
+var cart = [];
+var Items = [
+    {
+        name : 'Nuts',
+        calories : 45 ,
+        cost : 20,
+        baketime : 5
+    },
+    {
+        name : 'Baking Soda',
+        calories : 20,
+        cost : 25,
+        baketime : 7
+    },
+    {
+        name : 'Sugar',
+        calories : 32,
+        cost : 18,
+        baketime : 7
+    },
+    {
+        name : 'Oil',
+        calories : 35,
+        cost : 30,
+        baketime : 3
+    },
+    {
+        name : 'Chocolate',
+        calories : 50,
+        cost : 15,
+        baketime : 2
+    }
+]
+
+function totalcost(Cart)
+{
+    var cost = 0;
+    cost = Cart.quantity*Cart.cost;
+    return cost;    
+}
+
+function cartcost(Cart)
+{
+    let cost = 0;
+    for(i = 0 ; i < Cart.length ; i++)
+    {
+        cost += totalcost(Cart[i]);
+    }
+
+    return cost;
+}
+
+function totalcal(Cart)
+{
+    let cal = 0;
+    for(i = 0 ; i < Cart.length ; i++)
+    {
+        cal += Cart[i].calories;
+    
+    }
+    return cal;
+}
+
+function totalbt(Cart)
+{
+    let bt = Cart[0].baketime;
+    for(i = 0 ; i < Cart.length ; i++)
+    {
+        if(Cart[i].baketime > bt)
+            bt = Cart[i].baketime;
+    
+    }
+    return bt+10;
+}
+
+
+
+$(document).ready( () => {
+
+    let temp = new Object();
+
+    $("#1").click( () => {
+        let check = document.getElementById('1');
+        if(check.checked)
+        {
+                $('#flexRadioDefault5').attr('disabled','disabled');
+                $('#sum1').toggle();
+        }
+        else
+        {
+            $('#flexRadioDefault5').removeAttr("disabled");
+            $('#sum1').toggle();
+        }
+        
+    })
+    $("#2").click( () => {
+        let check = document.getElementById('1');
+        if(check.checked)
+        {
+                $('#sum2').toggle();
+        }
+        else
+        {
+            $('#sum2').toggle();
+        }
+       
+    })
+    $("#3").click( () => {
+        let check = document.getElementById('1');
+        if(check.checked)
+        {
+                $('#sum3').toggle();
+        }
+        else
+        {
+            $('#sum3').toggle();
+        }
+       
+    })
+    $("#4").click( () => {
+        let check = document.getElementById('4');
+        if(check.checked)
+        {
+            $('#flexRadioDefault2').attr('disabled','disabled');
+            $('#sum4').toggle();
+        }
+        else
+        {
+            $('#flexRadioDefault2').removeAttr("disabled");
+            $('#sum4').toggle();
+        }
+
+    })
+    $("#5").click( () => {
+        let check = document.getElementById('1');
+        if(check.checked)
+        {
+                $('#sum5').toggle();
+        }
+        else
+        {
+            $('#sum5').toggle();
+        }
+        
+    })
+    var billbutton = $("#generatebill");
+    var table1 = $("#tablebody")
+    $(billbutton).click( (e) => {
+        $(table1).empty();
+
+        let checkboxes = document.querySelectorAll('input[name="chkbk"]:checked');
+        checkboxes.forEach( (checkbox) => {
+            for(i=0; i < Items.length ; i++)
+            {
+                if(checkbox.value === Items[i].name)
+                {
+                    temp = JSON.parse(JSON.stringify(Items[i]));
+                    temp.shape = $('input[name="flexRadioDefault"]:checked').val();
+                    if(checkbox.value.localeCompare('Nuts') == 0)
+                    {
+                        temp.quantity = document.getElementById("Num1").value;
+                    }
+                    else if (checkbox.value === 'Baking Soda')
+                        temp.quantity = document.getElementById("Num2").value;
+                    else if (checkbox.value === 'Sugar')
+                        temp.quantity = document.getElementById("Num3").value;
+                    else if (checkbox.value === 'Oil')
+                        temp.quantity = document.getElementById("Num4").value;
+                    else if (checkbox.value === 'Chocolate')
+                        temp.quantity = document.getElementById("Num5").value;
+                    else
+                        console.log('Error!')
+
+                    console.log(temp.quantity);
+                    cart.push(temp);
+                }
+            }
+        })
+
+        for(i =0; i < cart.length; i++)
+        {
+            $(table1).append('<tr><th scope="row">'+(i+1)+'</th><td>'+cart[i].name+'</td><td>'+cart[i].calories+
+            '</td><td>'+cart[i].baketime+'</td><td>'+cart[i].quantity+
+            '</td><td>'+ cart[i].cost+ '</td><td>'+totalcost(cart[i])+'</td></tr>')
+        }
+
+        document.getElementById("summary1").innerHTML = '<p>Total Cost : ' + cartcost(cart)+ ' Rs</p><p> Total Baking Time : '+ totalbt(cart)+' Minutes</p><p>Total Calories : ' + totalcal(cart)+' KCal</p>';
+        
+    })
+
+    $("#final").click( (e) => {
+        alert('Order Placed :)')
+        location.reload();
+    })
+
+})
+    </script>
+  </head>
+  <body style="background-image: url('https://images.pexels.com/photos/929192/pexels-photo-929192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');background-repeat: no-repeat;
+  background-attachment: fixed;">
+     <header>
+      <!-- Image and text -->
+      <nav class="navbar navbar-dark bg-dark bg-gradient fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="http://3.bp.blogspot.com/-JGiI5zxU1_g/UEOifo-jOCI/AAAAAAAAMkw/GaTrI0EtQUk/s1600/Annas+logo+2012.png" alt="" width="40" height="30" class="d-inline-block align-top">
+            Rishabh's Bakery
+          </a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="btn btn-outline-info nav-link " aria-current="page" href="home.html">Order Now</a>
+              </li>
+            </ul>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <br><br><br>
+      <h1 style="color : white;">Bake a Cake!</h1>
+      <br><br>
+      <div class="row">
+        <!-- selection of Ingredients -->
+        <div class="col m-2" style="background-color : whitesmoke;">
+          <h2>Ingredients</h2>
+          <div id="col1">
+            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+              <input type="checkbox" class="btn-check" name="chkbk" value="Nuts" id="1" autocomplete="off">
+              <label class="btn btn-outline-success" for="1">Nuts</label>
+            
+              <input type="checkbox" class="btn-check" name="chkbk" id="2" value="Baking Soda" autocomplete="off">
+              <label class="btn btn-outline-success" for="2">Baking Soda</label>
+            
+              <input type="checkbox" class="btn-check" name="chkbk" id="3" value="Sugar" autocomplete="off">
+              <label class="btn btn-outline-success" for="3">Sugar</label>
+
+              <input type="checkbox" class="btn-check" name="chkbk" id="4" value="Oil" autocomplete="off">
+              <label class="btn btn-outline-success" for="4">Oil</label>
+
+              <input type="checkbox" class="btn-check" name="chkbk" id="5" value="Chocolate" autocomplete="off">
+              <label class="btn btn-outline-success" for="5">Chocolate</label>
+            </div>
+          </div>
+          <br>
+          <div class="container bg-danger">
+          <p >Constraints:</p>
+          <p >1: Nuts Cannot Produce Star Shape.</p>
+          <p >2: Oil Cannot Produce Triangular Shape.</p>
+        </div>
+        </div>
+
+        <!-- Selection of shape -->
+        <div class="col m-2" style="background-color:whitesmoke;">
+          <h2>Select Shape</h2>
+          <div id="col2">
+            <div class="form-check">
+              <input class="form-check-input" value="Circle" checked type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+              <label class="form-check-label" for="flexRadioDefault1">
+                Circle
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" value="Triangle" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+              <label class="form-check-label" for="flexRadioDefault2">
+                Triangle
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" value="Square" type="radio" name="flexRadioDefault" id="flexRadioDefault3" >
+              <label class="form-check-label" for="flexRadioDefault3">
+                Square
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" value="Rectangle"  type="radio" name="flexRadioDefault" id="flexRadioDefault4" >
+              <label class="form-check-label" for="flexRadioDefault4">
+                Rectangle
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" value="Star" type="radio" name="flexRadioDefault" id="flexRadioDefault5" >
+              <label class="form-check-label" for="flexRadioDefault5">
+                Star
+              </label>
+            </div>
+          </div>
+        <br>
+        </div>
+
+        <!-- cart summary -->
+        <div class="col m-2" style="background-color:whitesmoke;">
+          <h2>Cart</h2>
+          <div id="col3">
+          <div style="display: none;" id="sum1">
+          <Label  for="Num">Nuts </Label>
+          <input type="number" class="btn btn-outline-success my-2" min="1" max="100" id="Num1" value="1">
+            <br>
+          </div>  
+          
+          <div style="display: none;" id="sum2">
+          <Label for="Num">Baking Soda </Label>
+          <input type="number" class="btn btn-outline-success my-2" min="1" max="100" id="Num2" value="1">
+            <br>
+          </div>
+          
+          <div style="display: none;" id="sum3">
+          <Label for="Num">Sugar </Label>
+          <input type="number" class="btn btn-outline-success my-2" min="1" max="100" id="Num3" value="1">
+            <br>
+          </div>
+          
+          <div style="display: none;" id="sum4">
+          <Label for="Num">Oil </Label>
+          <input type="number" class="btn btn-outline-success my-2" min="1" max="100" id="Num4" value="1">
+            <br>
+          </div>
+          
+          <div style="display: none;" id="sum5">
+          <Label for="Num">Chocolate </Label>
+          <input type="number" class="btn btn-outline-success my-2" min="1" max="100" id="Num5" value="1">
+            <br>
+            <br>
+          </div>
+        <button type="button" class="btn btn-primary" id="generatebill" data-bs-toggle="modal" data-bs-target="#billmodal">
+          Generate Bill
+        </button>
+          </div>
+        </div>
+        
+      </div>
+
+<!-- Modal -->
+<div class="modal fade" id="billmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Bill</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover" id="billtable">
+          <thead>
+            <tr>
+              <th scope="col">No</th>
+              <th scope="col">Item Name</th>
+              <th scope="col">Calorific Value(KCal)</th>
+              <th scope="col">Baking Time(Min)</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Cost Per Unit (Rs)</th>
+              <th scope="col">Total Cost (Rs)</th>
+            </tr>
+          </thead>
+          <tbody id="tablebody"></tbody>
+        </table>
+
+        <p id="summary1"></p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="final" class="btn btn-primary">Place Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </main>
+    <footer></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  </body>
+</html>
